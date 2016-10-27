@@ -1,9 +1,9 @@
 // ==UserScript==
 // @name         Fur Affinity Experimental UI (Complete)
 // @namespace    http://tampermonkey.net/
-// @version      0.1
-// @description  Original concept art by Mailylion. !Expansion on ItsNix Script
-// @author       ItsNix (https://www.furaffinity.net/user/itsnix/) & JaysonHusky (https://github.com/jaysonhusky)
+// @version      0.2b
+// @description  Original concept art by Mailylion. Replaces the landing page with a new theme.
+// @author       ItsNix (https://www.furaffinity.net/user/itsnix/)
 // @match        https://www.furaffinity.net/
 // @grant        none
 // @run-at       document-end
@@ -17,11 +17,13 @@
     $(st).attr('href', 'https://fonts.googleapis.com/icon?family=Material+Icons');
     $(st).attr('rel', 'stylesheet');
     document.getElementsByTagName('head')[0].appendChild(st);
-	// required bootstrap theme
     var st2 = document.createElement('link');
     $(st2).attr('href', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css');
     $(st2).attr('rel', 'stylesheet');
     document.getElementsByTagName('head')[0].appendChild(st2);
+    var st3 = document.createElement('script');
+    $(st3).attr('src', 'https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js');
+    document.getElementsByTagName('head')[0].appendChild(st3);
 
 
     var sections = $('.section-divider');
@@ -67,7 +69,6 @@
 		display: block;
 	}
 
-
         #ddmenu ul { background-color: #272727; padding-top: 10px; padding-bottom: 10px; }
         #ddmenu ul li { text-align: left; }
         #ddmenu .top-heading { margin-left: 10px; }
@@ -91,7 +92,6 @@
         .material-icons { top: 4px; margin-right: 10px;  position: relative; }
         center.flow.frontpage.twolines { margin-top: 30px; margin-bottom: 30px; padding-left: 30px; padding-right: 30px; }
         center.flow.frontpage.threelines { margin-top: 30px; margin-bottom: 30px; padding-left: 30px; padding-right: 30px; }
-
 		// JaysonHusky's Tweaks (Updates Navigation to work with MailyLion's Concept & ItsNix's Script)
 		.navbar-fixed-top{ background: #2c2c2c; color: white; font-family:"Open Sans"!important; text-transform: uppercase; }
 		.navbar-fixed-top a:hover{ color: #fda938; text-decoration:none; }
@@ -114,12 +114,18 @@
 		.settings-dropdown-menu { margin-left: 200px; background: #2c2c2c; color: white !important; }
 		.myfa-dropdown-menu { background: #2c2c2c; color: white !important; }
 		.dropdown-menu li a{ color: white !important; } .mobile-message-item { display: inline-block; height: 10px; line-height: 0px; flex-grow: 1;   flex-shrink: 0; }
-		.fa-brand-logo { height: 70px; width: 130px; margin-top: -10px; margin-left: -30px;} `);
+		.fa-brand-logo { height: 70px; width: 130px; margin-top: -10px; margin-left: -30px;}
+		.mobilemenu {display:none;}
+		@media only screen and (max-width: 500px) {    
+        		.fa-brand-logo { height: 30px; width: 50px; margin-top: -5px; margin-left: 5px;}
+				.mobilemenu {display:block;} .desktopmenu {display:none;}
+		}
+ `);
 		jq.appendChild(newContent);
 		document.getElementsByTagName('body')[0].appendChild(jq);
     function experimental_navigation_jth(){
         var new_news;
-        if (document.cookie.indexOf('n') > -1 ){new_news = "No News";}else { new_news =  $('#news').html(); }
+        if (document.cookie.indexOf('n') > -1 ){new_news="No News";$('#newnews').css('background-color','#2c2c2c');}else{new_news=$('#news').html();}
         var message_centre = $('.mobile-messages').html();
         var imgavatarsrc = $('img.menubar_icon_resize').attr('src');
         var loggedinuser = $('img.menubar_icon_resize').attr('alt');
