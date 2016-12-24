@@ -1,10 +1,18 @@
 // ==UserScript==
 // @name         Fur Affinity Experimental UI (Complete)
-// @namespace    http://tampermonkey.net/
-// @version      0.2b
+// @namespace    FurAffinity
+// @version      3.4.1
 // @description  Original concept art by Mailylion. Replaces the landing page with a new theme.
-// @author       ItsNix (https://www.furaffinity.net/user/itsnix/)
+// @author       ItsNix (https://www.furaffinity.net/user/itsnix/) (Additional Coding by JaysonHusky)
 // @match        https://www.furaffinity.net/
+// @match        https://www.furaffinity.net/browse/
+// @match        https://www.furaffinity.net/staff/
+// @match        https://www.furaffinity.net/msg/others/*
+// @match        https://www.furaffinity.net/msg/pms*
+// @match        https://www.furaffinity.net/controls/*
+// @match        https://www.furaffinity.net/login
+// @match        https://www.furaffinity.net/user/*
+// @match        https://www.furaffinity.net/journals/*
 // @grant        none
 // @run-at       document-end
 // @require      https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js
@@ -54,20 +62,28 @@
     var logo = $('img.falogo');
     logo.appendTo('.nix-footerleft');
     $('<br/><span id="nix-footertext"></span>').appendTo('.nix-footerleft');
+    $('#ad-extra-submission-square').hide();
     $('#footer').children('div.p10t').children('strong').appendTo('#nix-footertext');
-    $('.ads').appendTo('.nix-footerright');
+    //
+    $('.ads').first().prependTo('#controlpanelnav');
+    //
+    
+    $('.ads').last().appendTo('.nix-footerright');
     $('<br/>').appendTo('.nix-footerleft');
     $('.online-stats').appendTo('.nix-footerleft');
     $(' \\| ').appendTo('#nix-footertext');
     $('#footer').children('div.p10t').children().appendTo('#nix-footertext');
     $('#footer').children('.p10t').remove();
 
+    
+    
     var jq = document.createElement('style');
     var newContent = document.createTextNode(`
 
 	.dropdown:hover .dropdown-menu {
 		display: block;
 	}
+
 
         #ddmenu ul { background-color: #272727; padding-top: 10px; padding-bottom: 10px; }
         #ddmenu ul li { text-align: left; }
@@ -80,19 +96,24 @@
         html, body, .submission-area, .frontpage-content { background-color: #323232; }
         #footer { border-top: 3px solid #969696; background-color: #272727; }
         .falogo { padding-bottom: 10px; }
-        #nix-footer { height: 200px; padding-top: 30px; }
+        #nix-footer { height: 240px; padding-top: 30px; }
         .nix-header {
                 display: inline; margin-left: 60px; margin-bottom: 5px; line-height: 32px;
                 color: #000; text-transform: uppercase; font-size: 14pt; font-weight: 500;
                 background-color: #fda936; padding: 15px 25px 4px 25px; }
         .nix-content { border-top: 3px solid #969696; background-color: #272727; }
-        .nix-footerleft { float: left; text-align: left; }
+        .nix-footerleft { float: left; text-align: left; color:white;}
         .nix-footerright { float: right; text-align: right; }
         .online-stats, #nix-footertext { text-align: left; padding-left: 50px; }
         .material-icons { top: 4px; margin-right: 10px;  position: relative; }
         center.flow.frontpage.twolines { margin-top: 30px; margin-bottom: 30px; padding-left: 30px; padding-right: 30px; }
         center.flow.frontpage.threelines { margin-top: 30px; margin-bottom: 30px; padding-left: 30px; padding-right: 30px; }
+
 		// JaysonHusky's Tweaks (Updates Navigation to work with MailyLion's Concept & ItsNix's Script)
+		.nixfix {clear:both;}
+		.ads img {    vertical-align: baseline; margin-left: -20px;}
+		#ad-10 img {display: inline;position: relative;left: -35px; }
+#ad-extra-submission-square {display:none;}
 		.navbar-fixed-top{ background: #2c2c2c; color: white; font-family:"Open Sans"!important; text-transform: uppercase; }
 		.navbar-fixed-top a:hover{ color: #fda938; text-decoration:none; }
 		.dropdown-item a:hover { background: #4c4c4c !important; }
@@ -105,7 +126,7 @@
 		#set2 li {display:inline;}
 		.unn {padding: 3px; }
 		#username {	display:block;    color: #cfcfcf;	margin-top: 10px;	margin-left: 50px;}
-		#newnews{	background: gold;	padding: 5px;	display:block;	color: black; text-align: center; width: 427px;}
+		#newnews{	background: #fda936;	padding: 5px;	display:block;	color: black; text-align: center; width: 427px;}
 		#newnews a { color: black; }
 		form {display:inline; }
 		.dropdown-menu>li>a:hover { background: #4c4c4c; }
@@ -116,6 +137,13 @@
 		.dropdown-menu li a{ color: white !important; } .mobile-message-item { display: inline-block; height: 10px; line-height: 0px; flex-grow: 1;   flex-shrink: 0; }
 		.fa-brand-logo { height: 70px; width: 130px; margin-top: -10px; margin-left: -30px;}
 		.mobilemenu {display:none;}
+#nix-footertext { color: white; }
+@media only screen and (max-width: 768px) {    
+        		.fa-brand-logo { height: 30px; width: 50px; margin-top: -5px; margin-left: 5px;}
+				.mobilemenu {display:block;} .desktopmenu {display:none;}
+}
+
+		}
 		@media only screen and (max-width: 500px) {    
         		.fa-brand-logo { height: 30px; width: 50px; margin-top: -5px; margin-left: 5px;}
 				.mobilemenu {display:block;} .desktopmenu {display:none;}
@@ -123,9 +151,19 @@
  `);
 		jq.appendChild(newContent);
 		document.getElementsByTagName('body')[0].appendChild(jq);
+    
+
+    
+    function browse_plugin(){
+        var smi=document.createElement('style');
+        var sbm=document.createTextNode(`.sidebar-static { position: fixed;top: 70px;bottom: 0px;right: -290px;z-index: 1000000;background: rgba(1,0,0,0.6);transition: 0.5s all;height: 800px;}.sidebar-static:hover  {position: absolute;top: 50px;bottom: 0px;right: 0px;z-index: 1000000;background: rgba(1,0,0,0.9);transition: 0.5s all;height: 800px;}`);
+		smi.appendChild(sbm);
+		document.getElementsByTagName('body')[0].appendChild(smi);
+    }
+    
     function experimental_navigation_jth(){
         var new_news;
-        if (document.cookie.indexOf('n') > -1 ){new_news="No News";$('#newnews').css('background-color','#2c2c2c');}else{new_news=$('#news').html();}
+        if (document.cookie.indexOf('n') > -1 ){new_news = "No News";$('#newnews').css('background-color','#2c2c2c');}else { new_news =  $('#news').html(); }
         var message_centre = $('.mobile-messages').html();
         var imgavatarsrc = $('img.menubar_icon_resize').attr('src');
         var loggedinuser = $('img.menubar_icon_resize').attr('alt');
@@ -234,6 +272,102 @@
 		</div>
 	</nav>`;
         $('#header').html(nav_desktop);
+        //$('#nix-footertext').append($('.online-stats').html());
     }
-    experimental_navigation_jth();
+    function fix_plugin() {
+        var pathx = window.location.pathname;
+        if(~pathx.indexOf("/controls/")){
+            $('.sidebar').hide();
+        }
+        switch (pathx){
+            case "/user/fender/":    // Temporary until wildcard fix is ready
+                $('.user-nav-content-base').css('color','grey');
+                $('h2.inline').css('margin-left','20px');
+                $('.user-nav-content-base strong').css('margin-left','30px');
+                $('.userpage-layout-profile').css('color','lightgrey');
+                $('h2').css('color','lightgrey');
+                break;
+             case "/journals/fender":    
+                $('.user-nav-content-base').css('color','grey');
+                $('h2.inline').css('margin-left','20px');
+                $('.user-nav-content-base strong').css('margin-left','30px');
+                $('.userpage-layout-profile').css('color','lightgrey');
+                $('h2').css('color','lightgrey');
+                $('div.inline').css('color','lightgrey');
+                $('.journal-preview-body').css('color','lightgrey');
+                $('.journal-date-floater').css('color','lightgrey');
+                $('.fontsize12').css('color','lightgrey');
+                $("[id^=jid]").css('margin-top','-60px');
+                break;
+            case "/staff":
+                $('.sidebar').hide();
+                $('.nix-header').first().hide();
+                $('.content a').first().hide();
+                $('.staffright i').css('color','white');
+                $('.flex-item-staff').css('width','25%');
+                $('.flex-item-staff').css('margin-left','7%');
+                $('.flex-container').css('margin-bottom','30px');
+                break;
+            case "/msg/others/":
+                $('.info span').css('color','white');
+                $('ul.message-stream li').css('color','white');
+                $('div#messagecenter-other ul.message-stream li input').css('margin-left','50px');
+                $('.section-divider').css('margin-top','0px');
+                break;
+            case "/controls/sessions/logins/":
+                $('#sessions-form').css('color','white');
+                break;
+            case "/controls/site-settings/":
+                $('.control-panel-option').css('color','white');
+                $('.control-panel-option').css('padding','5px');
+                break;
+            case "/controls/settings/":
+                $('.control-panel-option').css('color','white');
+                break;
+            case "/controls/user-settings/":
+                $('.control-panel-option').css('color','white');
+                break;
+            case "/controls/profile/":
+                $('.flex-item').css('color','white');
+                $('.control-panel-option').css('color','white');
+                $('.control-panel-option').css('padding','5px');
+                break;
+            case "/controls/submissions/":
+                $('.t-image span').css('color','white');
+                break;
+            case "/controls/avatar/":
+                $('#controlpanel').css('color','white');
+                break;
+            case "/login/":
+                $('.p20b').css('color','white');
+                break;
+            case "/controls/journal/":
+                $('.sidebar').show();
+                break;
+            case "/controls/troubletickets/":
+                $('.ttguideline').css('color','white');
+                $('select').css('color','white');
+                $('.textbox').css('color','white');
+                $('table.auto_link').css('color','white');
+                $('.floatleft').css('color','white');
+                $('.section-divider form').css('color','white');
+                $('.section-divider form').css('display','block');
+                break;
+            case "/browse/":
+                $('.sidebar').css('color','white');
+                //$('.sidebar').css('background','#5d6069');
+                $('.section-divider').css('margin-bottom','-20px');
+                $('.section-divider').css('margin-top','-20px');
+                $('.section-divider').css('overflow','hidden');
+                $('.button').css('border-radius','0px');
+                $('.nix-content').css('margin-top','3px');
+                break;
+            // Leave this blank!
+            default:
+                break;
+        }
+    }
+    experimental_navigation_jth(); // redesigned navigation
+    browse_plugin(); // Sidebar modifications
+    fix_plugin(); // Small addon to enable tweaks for individual pages
 })();
