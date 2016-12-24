@@ -17,6 +17,10 @@ This userscript implements an Experimental UI onto the FurAffinity landing page.
 
 
 ## Changelog
+
+<b>1.0.2</b> (2016-12-24)<br>
+- Implements W.I.P tweaks for new pages (Not yet complete but functional)
+
 <b>1.0.1</b> (2016-10-27)<br>
 - Added some compatibility to smaller screens.
 
